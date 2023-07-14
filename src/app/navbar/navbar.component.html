@@ -1,0 +1,112 @@
+<div class="navegacion">
+
+    <nav class="navbar navbar-expand-lg bg-success bg-gradient nav1" data-bs-theme="dark">
+        <div class="container-fluid">
+            <a class="navbar-brand btn btn-outline-dark" [routerLink]="['/mostrar_productos']">Home<img
+                    src="../../assets/cart-fill.svg" alt="Bootstrap" width="30" height="24"></a>
+
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarText"
+                aria-controls="navbarText" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarText">
+                <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                    <li class="nav-item">
+                        <a class="nav-link active" aria-current="page" href="/productos">Administrar productos</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#">Mis compras</a>
+                    </li>
+                    <div class="dropdown">
+                        <button class="btn btn-success dropdown-toggle" type="button" data-bs-toggle="dropdown"
+                            aria-expanded="false">
+                            Categorias
+                        </button>
+                        <ul class="dropdown-menu dropdown-menu-light bg-dark">
+                            <li><a *ngFor="let item of categorias" class="dropdown-item"
+                                    [routerLink]="['/mostrar_productos']">{{item}}</a></li>
+                            <li><a *ngFor="let producto of productosEnCarrito | async" class="dropdown-item"
+                                    [routerLink]="['/mostrar_productos']">{{producto.idProductoCarrito}}</a></li>
+                        </ul>
+                    </div>
+                </ul>
+
+                <a class="carrito">
+                    <button class="btn btn-outline-light" type="button" data-bs-toggle="offcanvas"
+                        data-bs-target="#offcanvasRight" aria-controls="offcanvasRight">
+                        <span>Cart</span>
+                        <svg xmlns="http://www.w3.org/2000/svg" width="35" height="35" fill="currentColor"
+                            class="bi bi-cart-fill" viewBox="0 0 16 16">
+                            <path
+                                d="M0 1.5A.5.5 0 0 1 .5 1H2a.5.5 0 0 1 .485.379L2.89 3H14.5a.5.5 0 0 1 .491.592l-1.5 8A.5.5 0 0 1 13 12H4a.5.5 0 0 1-.491-.408L2.01 3.607 1.61 2H.5a.5.5 0 0 1-.5-.5zM5 12a2 2 0 1 0 0 4 2 2 0 0 0 0-4zm7 0a2 2 0 1 0 0 4 2 2 0 0 0 0-4zm-7 1a1 1 0 1 1 0 2 1 1 0 0 1 0-2zm7 0a1 1 0 1 1 0 2 1 1 0 0 1 0-2z" />
+                        </svg>
+
+                        <span class="badge bg-dark text-white ms-1 rounded-pill">{{total_en_carrito}}</span>
+                    </button>
+                </a>
+            </div>
+
+        </div>
+    </nav>
+</div>
+<!-- <div class="alert alert-success"></div> -->
+<div class="offcanvas offcanvas-end" data-bs-scroll="true" data-bs-backdrop="false" tabindex="-1" id="offcanvasRight"
+    aria-labelledby="offcanvasRightLabel">
+    <div class="offcanvas-header">
+        <h5 class="offcanvas-title" id="offcanvasRightLabel">Productos en carrito</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+    </div>
+    <div class="offcanvas-body">
+        <!-- Para listar los productos -->
+        <ol class="list-group list-group-numbered">
+            <li *ngFor="let prod of productosEnCarrito | async" class="list-group">
+                <!--  -->
+                <div class="card" style="max-height: 300px;">
+                    <div class="row g-0">
+                        <div class="col-md-3">
+                            <img src="{{(buscarProductoPorId(prod.ProductoId)).imagen}}" class="img-fluid rounded-start"
+                                alt="...">
+                        </div>
+                        <div class="col-md-8">
+                            <h6 class="">{{ (buscarProductoPorId(prod.ProductoId)).nombre }}:{{
+                                (buscarProductoPorId(prod.ProductoId)).precio }}</h6>
+                            <p class="card-text"></p>
+                            <form
+                                (ngSubmit)="actualizar_cantidad(buscarProductoPorId(prod.idProductoCarrito), productoCarritoActualizar.cantidad)"
+                                #productoForm="ngForm">
+                                <div class="row">
+                                    <div class="col">
+
+                                        <input class="form-control" type="number" name="cantidad" id="cantidad"
+                                            value="{{prod.cantidad}}" min="1"
+                                            max="(buscarProductoPorId(prod.ProductoId)).cantidad_producto"
+                                            [(ngModel)]="productoCarritoActualizar.cantidad" required>
+
+
+                                    </div>
+                                    <div class="col">
+                                        <button type="submit" class="btn btn-success"
+                                            *ngIf="productoCarritoActualizar.cantidad<=prod.cantidad && productoCarritoActualizar.cantidad>0">Actualizar</button>
+                                    </div>
+
+                                </div>
+                            </form>
+                            <p class="card-text"><small
+                                    class="text-body-secondary">${{(buscarProductoPorId(prod.ProductoId)).precio*prod.cantidad}}</small>
+                            </p>
+
+                        </div>
+                        <div class="col-md-1">
+                            <button class="btn btn-danger">X</button>
+                        </div>
+                    </div>
+                </div>
+
+                <br><!--  -->
+            </li>
+            <li class="list-group-item">A list item</li>
+            <li class="list-group">Total: $ {{carritoInfo.valor_total}}</li>
+        </ol>
+        <!--    -->
+    </div>
+</div>
