@@ -33,7 +33,7 @@
 
                 <a class="carrito">
                     <button class="btn btn-outline-light" type="button" data-bs-toggle="offcanvas"
-                        data-bs-target="#offcanvasRight" aria-controls="offcanvasRight">
+                        data-bs-target="#offcanvasRight" aria-controls="offcanvasRight" (click)="obtenerProductosDeCarrito()">
                         <span>Cart</span>
                         <svg xmlns="http://www.w3.org/2000/svg" width="35" height="35" fill="currentColor"
                             class="bi bi-cart-fill" viewBox="0 0 16 16">
@@ -53,59 +53,68 @@
 <div class="offcanvas offcanvas-end" data-bs-scroll="true" data-bs-backdrop="false" tabindex="-1" id="offcanvasRight"
     aria-labelledby="offcanvasRightLabel">
     <div class="offcanvas-header">
-        <h5 class="offcanvas-title" id="offcanvasRightLabel">Productos en carrito</h5>
+        <h5 class="offcanvas-title" id="offcanvasRightLabel">Total carrito:  $ {{carritoInfo.valor_total}}</h5>
         <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"></button>
     </div>
     <div class="offcanvas-body">
         <!-- Para listar los productos -->
         <ol class="list-group list-group-numbered">
-            <li *ngFor="let prod of productosEnCarrito | async" class="list-group">
+            <li *ngFor="let prod of productosEnCarrito | async; let i = index" class="list-group">
                 <!--  -->
                 <div class="card" style="max-height: 300px;">
                     <div class="row g-0">
                         <div class="col-md-3">
-                            <img src="{{(buscarProductoPorId(prod.ProductoId)).imagen}}" class="img-fluid rounded-start"
+                            <img src="{{prod.producto.imagen}}" class="img-fluid rounded-start"
                                 alt="...">
                         </div>
-                        <div class="col-md-8">
-                            <h6 class="">{{ (buscarProductoPorId(prod.ProductoId)).nombre }}:{{
-                                (buscarProductoPorId(prod.ProductoId)).precio }}</h6>
-                            <p class="card-text"></p>
+                        <div class="col-md-8 text-center">
+                            <h6 class="t">{{i+1}}. {{ prod.producto.nombre }}: &nbsp; ${{
+                                prod.valor_parcial }}</h6>
+                            
                             <form
-                                (ngSubmit)="actualizar_cantidad(buscarProductoPorId(prod.idProductoCarrito), productoCarritoActualizar.cantidad)"
-                                #productoForm="ngForm">
+                                
+                                #productoForm="ngForm"><span class="card-text">Cant: {{prod.cantidad}} </span><span class="small">(Val Unit: ${{prod.producto.precio}})</span>
                                 <div class="row">
                                     <div class="col">
 
-                                        <input class="form-control" type="number" name="cantidad" id="cantidad"
-                                            value="{{prod.cantidad}}" min="1"
-                                            max="(buscarProductoPorId(prod.ProductoId)).cantidad_producto"
-                                            [(ngModel)]="productoCarritoActualizar.cantidad" required>
+                                        <input class="form-control" type="number" name="prod.cantidad" [(ngModel)]="prod.cantidad"
+                                             min="1"
+                                            max="{{prod.producto.cantidad_producto}}" value="{{prod.cantidad}}"
+                                             [value]="prod.cantidad"  required>
 
 
                                     </div>
                                     <div class="col">
                                         <button type="submit" class="btn btn-success"
-                                            *ngIf="productoCarritoActualizar.cantidad<=prod.cantidad && productoCarritoActualizar.cantidad>0">Actualizar</button>
+                                            *ngIf="prod.cantidad<=prod.producto.cantidad_producto && prod.cantidad>0" (click)="actualizar_cantidad(prod.cantidad, prod)">Actualizar</button>
                                     </div>
 
                                 </div>
                             </form>
                             <p class="card-text"><small
-                                    class="text-body-secondary">${{(buscarProductoPorId(prod.ProductoId)).precio*prod.cantidad}}</small>
+                                    class="text-body-secondary">Precio por cantidad: ${{prod.producto.precio*prod.cantidad}}</small>
                             </p>
 
                         </div>
                         <div class="col-md-1">
-                            <button class="btn btn-danger">X</button>
+                            <button class="btn btn-danger" (click)="eliminar_producto(prod)">X</button>
                         </div>
                     </div>
                 </div>
 
                 <br><!--  -->
             </li>
-            <li class="list-group-item">A list item</li>
-            <li class="list-group">Total: $ {{carritoInfo.valor_total}}</li>
+            <li *ngIf="carritoInfo.valor_total>0" class="list-group">
+                <div class="row">
+                    <div class="col">
+                        <button class="btn btn-danger" (click)="vaciar_carrito()">Vaciar Carrito</button>
+                    </div>
+                    
+                    <div class="col">
+                        <button class="btn btn-info" [routerLink]="['/comprar']">Ir a comprar</button>
+                    </div>
+                </div>
+            </li>
         </ol>
         <!--    -->
     </div>

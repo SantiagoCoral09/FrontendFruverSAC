@@ -1,3 +1,5 @@
+import { ProductoModel } from "./producto.model";
+
 export class ProductosCarritoModel {
     constructor(
         public idProductoCarrito: string,
@@ -5,7 +7,7 @@ export class ProductosCarritoModel {
         public ProductoId: string,
         public cantidad: number,
         public valor_parcial: number,
-        
+        public producto: ProductoModel 
         
     ) {
     }

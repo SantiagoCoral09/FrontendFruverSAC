@@ -33,7 +33,8 @@ export class MostrarProductosComponent implements OnInit {
   //Para agregar un carrito a la BD
   // valorTotal = 0;
   carrito = new CarritoModel("", "prueba", 0, "");
-  productoCarrito = new ProductosCarritoModel("", "", "", 0, 0);
+  product=new ProductoModel("","",0,0,"","","");
+  productoCarrito = new ProductosCarritoModel("", "", "", 0, 0,this.product);
   // productoCarrito = new ProductosCarritoModel("", "", "", 0, 0,"",0,0,"","","");
 
   constructor(private carritoService: CarritoService, private productoService: ProductoService, private productosCarritoService: ProductosCarritoService) { }
@@ -118,59 +119,98 @@ export class MostrarProductosComponent implements OnInit {
     const idCarritoL = localStorage.getItem('idCarritoL');
 
     if (idCarritoS && idCarritoL) {
-      console.log(idCarritoS,idCarritoL,"producto agregado:");
+      console.log(idCarritoS, idCarritoL, "producto agregado:");
       console.log(producto);
       console.log(`Cantidad a elegir: ${cantidad} - ${typeof (cantidad)}`);
+
       this.carritoService.obtenerCarritoByID(idCarritoS).subscribe(data => {
+
         this.carrito = data[0];
         console.log("Dats del  carrito:");
         console.log(this.carrito);
+        let valorTotal = +this.carrito.valor_total;
+        // valorTotal=+valorTotal;
+        console.log("Carrito actual:", this.carrito);
+        valorTotal += cantidad * producto.precio;
+        console.log(valorTotal, typeof (valorTotal));
+        this.carrito.valor_total = valorTotal;
+        console.log(producto.precio, typeof (producto.precio));
+
+        console.log("Carrito editar:", this.carrito);
+
+
+
+
+        this.productosCarritoService.obtenerProductoCarritoByProduct(producto.idProducto).subscribe(data => {
+          if (data) {
+            //Hay que actualizar la cantidad en uno ya existente
+            console.log("Ya hay de ese producto");
+            console.log(data);
+            this.productoCarrito = data;
+            let valorTotalAntes = 0;
+            let valorParcial;
+            // valorTotalAntes = +this.carrito.valor_total;
+            valorParcial = +data.valor_parcial;
+            // valorTotalAntes = valorTotalAntes - valorParcial;
+            ///vamos aobtener el precio del producto a actualizar
+            let precioProd = producto.precio;
+            let valorParcialNuevo = valorParcial+cantidad * precioProd;
+
+            this.productoCarrito.idProductoCarrito = data.idProductoCarrito;
+            this.productoCarrito.CarritoId = idCarritoS;
+            this.productoCarrito.ProductoId = producto.idProducto;
+            this.productoCarrito.cantidad += cantidad;
+            this.productoCarrito.valor_parcial = valorParcialNuevo;
+            console.log("Datos a llenar", this.productoCarrito);
+            this.carritoService.actualizarCarrito(this.carrito).subscribe(data => {
+              console.log(data);
+              this.productosCarritoService.actualizarProductoACarrito(this.productoCarrito).subscribe(data => {
+                console.log(data);
+                alert("Se ha añadido correctamente el producto al carrito.");
+                window.location.reload(); // Recargar la página
+              });
+
+
+            });
+
+
+
+          } else {
+            //se agrega el producto al carrito
+            this.productoCarrito.CarritoId = idCarritoS;
+            this.productoCarrito.ProductoId = producto.idProducto;
+            this.productoCarrito.cantidad = cantidad;
+            this.productoCarrito.valor_parcial = cantidad * producto.precio;
+
+            console.log("Datos a llenar", this.productoCarrito);
+            console.log(this.productoCarrito);
+            console.log(this.carrito);
+
+            this.carritoService.actualizarCarrito(this.carrito).subscribe(data => {
+              console.log(data);
+              this.productosCarritoService.agregarProductoACarrito(this.productoCarrito, idCarritoS).subscribe(data => {
+                console.log(data);
+                alert("Se ha añadido correctamente el producto al carrito.");
+                window.location.reload(); // Recargar la página
+              });
+
+
+            });
+          }
+        });
       }, error => {
         console.log(error);
       });
-      let valorTotal=+this.carrito.valor_total;
-      // valorTotal=+valorTotal;
-      console.log("Carrito actual:", this.carrito);
-      valorTotal += cantidad * producto.precio;
-      console.log(valorTotal, typeof (valorTotal));
-      this.carrito.valor_total = valorTotal;
-      console.log(producto.precio, typeof (producto.precio));
 
-      console.log("Carrito editar:", this.carrito);
-
-
-      this.productoCarrito.CarritoId = idCarritoS;
-      this.productoCarrito.ProductoId = producto.idProducto;
-      this.productoCarrito.cantidad = cantidad;
-      this.productoCarrito.valor_parcial = cantidad * producto.precio;
-      // this.productoCarrito.nombre=producto.nombre;
-      // this.productoCarrito.precio=producto.precio;
-      // this.productoCarrito.cantidad_producto=producto.cantidad_producto;
-      // this.productoCarrito.descripcion=producto.descripcion;
-      // this.productoCarrito.categoria=producto.categoria;
-      // this.productoCarrito.imagen=producto.imagen;
-      console.log("Datos a llenar",this.productoCarrito);
-      console.log(this.productoCarrito);
-      console.log(this.carrito);
-
-      this.carritoService.actualizarCarrito(this.carrito).subscribe(data => {
-        console.log(data);
-      });
-
-      this.productosCarritoService.agregarProductoACarrito(this.productoCarrito, idCarritoS).subscribe(data => {
-        console.log(data);
-        alert("Se ha añadido correctamente el producto al carrito.");
-        window.location.reload(); // Recargar la página
-      });
     }
   }
   ////
   eliminarCarrito() {
-    const idCarrito = sessionStorage.getItem('idCarritoS');    
+    const idCarrito = sessionStorage.getItem('idCarritoS');
     const idCarritoL = localStorage.getItem('idCarritoL');
 
-    if(idCarrito && idCarritoL){
-      this.productosCarritoService.eliminarTodosProductosCarrito(idCarrito).subscribe(()=>{
+    if (idCarrito && idCarritoL) {
+      this.productosCarritoService.eliminarTodosProductosCarrito(idCarrito).subscribe(() => {
         this.carritoService.borrarCarrito(idCarrito).subscribe(() => {
           console.log('Carrito eliminado');
         }, error => {
@@ -181,7 +221,7 @@ export class MostrarProductosComponent implements OnInit {
       sessionStorage.removeItem('idCarritoS');
       localStorage.removeItem('idCarritoL');
     }
-    
+
   }
 
 }

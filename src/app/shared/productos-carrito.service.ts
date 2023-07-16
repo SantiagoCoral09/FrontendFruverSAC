@@ -29,12 +29,17 @@ export class ProductosCarritoService {
     return this.http.get<ProductosCarritoModel>(`${this.BASE_URL}/producto_carrito/${idProductoCarrito}`);
   }
 
+  obtenerProductoCarritoByProduct(idProducto: string) {
+    //Obtener producto por ID del PRODUCTO EN EL CARRO DE COMPRAS
+    return this.http.get<ProductosCarritoModel>(`${this.BASE_URL}/producto_carritoProduct/${idProducto}`);
+  }
+
   agregarProductoACarrito(productoCarrito:ProductosCarritoModel,idCarrito:string){
     return this.http.post<ProductosCarritoModel>(`${this.BASE_URL}/productos_carrito/${idCarrito}`,productoCarrito);
   }
   
-  actualizarProductoACarrito(productoCarrito:ProductosCarritoModel,idCarrito:string){
-    return this.http.post<ProductosCarritoModel>(`${this.BASE_URL}/producto_carrito/${idCarrito}`,productoCarrito);
+  actualizarProductoACarrito(productoCarrito:ProductosCarritoModel){
+    return this.http.put<string>(`${this.BASE_URL}/producto_carrito/${productoCarrito.idProductoCarrito}`,productoCarrito);
   }
 
   eliminarTodosProductosCarrito(idCarrito: string) {
