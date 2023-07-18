@@ -13,6 +13,9 @@ export class ProductoService {
   obtenerProductos(){
     return this.http.get<ProductoModel[]>(`${this.BASE_URL}/productos`);
   }
+  obtenerProductosByCategoria(categoria:string){
+    return this.http.get<ProductoModel[]>(`${this.BASE_URL}/productos_cat/${categoria}`);
+  }
   obtenerProducto(idProducto:string){///Un solo producto
     return this.http.get<ProductoModel[]>(`${this.BASE_URL}/productos/${idProducto}`);
   }

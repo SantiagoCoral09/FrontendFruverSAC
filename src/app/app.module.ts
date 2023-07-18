@@ -10,6 +10,9 @@ import { EditarProductosComponent } from './editar-productos/editar-productos.co
 import { ProductoService } from './shared/producto.service';
 import { MostrarProductosComponent } from './mostrar-productos/mostrar-productos.component';
 import { NavbarComponent } from './navbar/navbar.component';
+import { ComprarComponent } from './comprar/comprar.component';
+import { MostrarProductosCategoriaComponent } from './mostrar-productos-categoria/mostrar-productos-categoria.component';
+import { ListarProductosCategoriaComponent } from './listar-productos-categoria/listar-productos-categoria.component';
 
 @NgModule({
   declarations: [
@@ -17,7 +20,10 @@ import { NavbarComponent } from './navbar/navbar.component';
     ListarProductosComponent,
     EditarProductosComponent,
     MostrarProductosComponent,
-    NavbarComponent
+    NavbarComponent,
+    ComprarComponent,
+    MostrarProductosCategoriaComponent,
+    ListarProductosCategoriaComponent
   ],
   imports: [
     BrowserModule,

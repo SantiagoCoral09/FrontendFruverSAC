@@ -3,11 +3,11 @@
 <div class="listar">
   <div class="card">
     <div class="card-header d-flex justify-content-center">
-      <h3>Listado de productos registrados</h3>
+      <h3>Listado de productos registrados  {{categoria}}</h3>
     </div>
     <br>
     <div class="row">
-      <div class="col-4">
+      <div class="col-11">
         <!-- Mostrar los enlaces de paginación -->
         <div class="pagination paginacion">
           <span class="ir_A">Registros de {{((currentPage-1)*10)+1}} a: {{((currentPage-1)*10)+10}} <br>Total:
@@ -15,7 +15,7 @@
             class="btn btn-secondary">{{ page }}</button>
         </div>
       </div>
-      <div class="col">
+      <div class="col-1">
         <form class="form-inline nuevo_producto">
           <fieldset class="form-group float-end">
             <a class="btn btn-primary" [routerLink]="['/productos/agregar']">Nuevo Producto</a>

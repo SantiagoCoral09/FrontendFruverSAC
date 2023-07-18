@@ -2,8 +2,8 @@
 
     <nav class="navbar navbar-expand-lg bg-success bg-gradient nav1" data-bs-theme="dark">
         <div class="container-fluid">
-            <a class="navbar-brand btn btn-outline-dark" [routerLink]="['/mostrar_productos']">Home<img
-                    src="../../assets/cart-fill.svg" alt="Bootstrap" width="30" height="24"></a>
+            <a class="navbar-brand btn " [routerLink]="['/mostrar_productos']"><img
+                    src="../../assets/Fruver_S.A.C__1_-removebg-preview.png" alt="Bootstrap" width="100"></a>
 
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarText"
                 aria-controls="navbarText" aria-expanded="false" aria-label="Toggle navigation">
@@ -11,25 +11,40 @@
             </button>
             <div class="collapse navbar-collapse" id="navbarText">
                 <ul class="navbar-nav me-auto mb-2 mb-lg-0">
-                    <li class="nav-item">
-                        <a class="nav-link active" aria-current="page" href="/productos">Administrar productos</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="#">Mis compras</a>
-                    </li>
                     <div class="dropdown">
                         <button class="btn btn-success dropdown-toggle" type="button" data-bs-toggle="dropdown"
                             aria-expanded="false">
                             Categorias
                         </button>
                         <ul class="dropdown-menu dropdown-menu-light bg-dark">
-                            <li><a *ngFor="let item of categorias" class="dropdown-item"
-                                    [routerLink]="['/mostrar_productos']">{{item}}</a></li>
-                            <li><a *ngFor="let producto of productosEnCarrito | async" class="dropdown-item"
-                                    [routerLink]="['/mostrar_productos']">{{producto.idProductoCarrito}}</a></li>
+                            <li><a class="dropdown-item" href="/mostrar_productos"
+                                >Todos los productos</a></li>
+                            <li><a *ngFor="let item of categorias" class="dropdown-item" href="/mostrar_productos_categoria/{{item}}"
+                                    >{{item}}</a></li>
+                            
                         </ul>
                     </div>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#">Mis compras</a>
+                    </li>
+                    
                 </ul>
+                <ul class="navbar-nav">
+                <li class="nav-item">
+                    <!-- <a class="nav-link active" aria-current="page" href="/productos">Administrar productos</a> -->
+                    <div class="dropdown">
+                        <button class="btn btn-success dropdown-toggle" type="button" data-bs-toggle="dropdown"
+                            aria-expanded="false">
+                            Administrar productos
+                        </button>
+                        <ul class="dropdown-menu dropdown-menu-light bg-dark">
+                            <li><a *ngFor="let item of categorias" class="dropdown-item"
+                                href="/productos/{{item}}">{{item}}</a></li>
+                            <li><a class="dropdown-item" aria-current="page" href="/productos">Todos los productos</a></li>
+                        </ul>
+                    </div>
+                </li>
+                <li class="nav-item">
 
                 <a class="carrito">
                     <button class="btn btn-outline-light" type="button" data-bs-toggle="offcanvas"
@@ -44,6 +59,9 @@
                         <span class="badge bg-dark text-white ms-1 rounded-pill">{{total_en_carrito}}</span>
                     </button>
                 </a>
+            </li>
+
+            </ul>
             </div>
 
         </div>
@@ -71,30 +89,25 @@
                             <h6 class="t">{{i+1}}. {{ prod.producto.nombre }}: &nbsp; ${{
                                 prod.valor_parcial }}</h6>
                             
-                            <form
-                                
-                                #productoForm="ngForm"><span class="card-text">Cant: {{prod.cantidad}} </span><span class="small">(Val Unit: ${{prod.producto.precio}})</span>
+                            <form #productoForm="ngForm">
+                                <span class="card-text">Cant: {{prod.cantidad}} </span>
+                                <span class="small">(Val Unit: ${{prod.producto.precio}})</span>
                                 <div class="row">
                                     <div class="col">
-
                                         <input class="form-control" type="number" name="prod.cantidad" [(ngModel)]="prod.cantidad"
                                              min="1"
                                             max="{{prod.producto.cantidad_producto}}" value="{{prod.cantidad}}"
                                              [value]="prod.cantidad"  required>
-
-
                                     </div>
                                     <div class="col">
                                         <button type="submit" class="btn btn-success"
                                             *ngIf="prod.cantidad<=prod.producto.cantidad_producto && prod.cantidad>0" (click)="actualizar_cantidad(prod.cantidad, prod)">Actualizar</button>
                                     </div>
-
                                 </div>
                             </form>
-                            <p class="card-text"><small
-                                    class="text-body-secondary">Precio por cantidad: ${{prod.producto.precio*prod.cantidad}}</small>
+                            <p class="card-text">
+                                <small class="text-body-secondary">Precio por cantidad: ${{prod.producto.precio*prod.cantidad}}</small>
                             </p>
-
                         </div>
                         <div class="col-md-1">
                             <button class="btn btn-danger" (click)="eliminar_producto(prod)">X</button>

@@ -10,7 +10,7 @@ import { ProductoService } from '../shared/producto.service';
 })
 export class EditarProductosComponent implements OnInit {
 
-  categorias=["Frutas frescas","Verduras frescas","Hierbas y especias","Frutos secos y semillas","Exoticos y tropicales"];
+  categorias=["Frutas frescas","Verduras frescas","Hierbas y especias","Frutos secos y semillas","Tuberculos y Hortalizas","Exoticos y tropicales"];
   
   idProducto = '';
   titulo='';
