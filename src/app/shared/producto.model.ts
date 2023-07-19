@@ -12,3 +12,4 @@ export class ProductoModel {
         // this.idProducto=idProducto;
     }
 }
+

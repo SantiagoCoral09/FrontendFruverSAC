@@ -28,7 +28,7 @@
                             <div class="text-center">
                                 <!-- Product name-->
                                 <h5 class="fw-bolder">{{ producto.nombre }}</h5>
-                                <h6>{{producto.descripcion}}</h6>
+                                <h6>{{producto.descripcion | slice:0:50}} ...</h6>
                                 <!-- Product price-->
                                 $ {{producto.precio}}
                             </div>
